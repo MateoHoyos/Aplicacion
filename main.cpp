@@ -23,9 +23,15 @@ Metodo2 desencriptar y encriptar con semilla fija de 4.
 Contraseña del admin:"Mateo123"
 Ruta relativa para el admin:    "../Aplicacion/BD/sudo.txt"
 Ruta relativa para el usuarios: "../Aplicacion/BD/Users.txt"
+
 sudo.txt tiene la incriptada la contraseña "Mateo123"
 
 El formato de registro usuarios será: cédula 10 digitos, clave 4 digitos, saldo (COP).
+
+
+
+
+sudo.txt tiene la incriptada la contraseña "Mateo123"
 
 
 =====================================================================
@@ -41,6 +47,10 @@ El formato de registro usuarios será: cédula 10 digitos, clave 4 digitos, sald
 //prototipos de función
 void Escritura(string);
 string lectura(int);
+
+
+void Escritura(string);
+
 string conversion_a_binario(string);
 string binario_a_caracteres(string);
 string metodo2_encriptar(string ,int);
@@ -63,6 +73,7 @@ int main()
 
     //validacion de clave
     if(admin!=contenido_des){
+
         cout<<"Clave incorrecta"<<endl;        
     }
 
@@ -72,7 +83,17 @@ int main()
     string cedula;
     string clave;
     string saldo;
-    string binariocod;
+
+        cout<<"Clave incorrecta"<<endl;
+        return 0;
+    }
+
+    return 0;
+
+    /*string contenido;
+    string contenidocod;
+    string binario;
+    string binariocod;*/
 
 
     cout<<"Ingrese usuario: ";
@@ -156,6 +177,9 @@ bool validacion_cedula(string cedula){
     }
 
     return false;
+
+    Escritura(contenidocod,cod);*/
+
 }
 
 
@@ -309,7 +333,11 @@ void Escritura(string binariocod){
 
 
     // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
+
     outfile.open("../Aplicacion/BD/Users.txt",std::ofstream::app);
+
+    outfile.open("../Aplicacion/BD/Users.txt");
+
 
 
 
@@ -360,6 +388,7 @@ string lectura(int n){
      exit(1);
     }
 
+
     if(n==1){  //admin
         infile >> data;
     }
@@ -369,6 +398,10 @@ string lectura(int n){
             data+=frase+'\n'; // almacenar en un string
         }
     }
+
+
+    infile >> data;
+
 
 
     //cout << "\n\nArchivo leido-->\n\n" << endl;
