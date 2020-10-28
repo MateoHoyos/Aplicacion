@@ -20,6 +20,13 @@ Especificaciones del programa
 *********************
 Metodo2 desencriptar y encriptar con semilla fija de 4.
 
+Contraseña del admin:"Mateo123"
+Ruta relativa para el admin:    "../Aplicacion/BD/sudo.txt"
+Ruta relativa para el usuarios: "../Aplicacion/BD/Users.txt"
+
+
+sudo.txt tiene la incriptada la contraseña "Mateo123"
+
 =====================================================================
 
 
@@ -32,7 +39,7 @@ Metodo2 desencriptar y encriptar con semilla fija de 4.
 
 //prototipos de función
 string lectura(int);
-void Escritura(string,int);
+void Escritura(string);
 string conversion_a_binario(string);
 string binario_a_caracteres(string);
 string metodo2_encriptar(string ,int);
@@ -41,7 +48,26 @@ string metodo2_desencriptar(string ,int);
 
 int main()
 {
-    string contenido;
+    int semilla=4;
+    int cod=1; // 1 admin
+
+    string admin;
+    cout<<"Ingrese clave: ";
+    cin>>admin;
+
+    string binario_encriptado=lectura(cod);
+    string binario = metodo2_desencriptar(binario_encriptado,semilla);
+    string contenido_des = binario_a_caracteres(binario);
+
+    //validacion de clave
+    if(admin!=contenido_des){
+        cout<<"Clave incorrecta"<<endl;
+        return 0;
+    }
+
+    return 0;
+
+    /*string contenido;
     string contenidocod;
     string binario;
     string binariocod;
@@ -63,7 +89,7 @@ int main()
     contenidocod = binario_a_caracteres(binario);
     //cout <<"\n\n"<< contenidocod << "\n\n";
     //return 0;
-    Escritura(contenidocod,cod);
+    Escritura(contenidocod,cod);*/
 }
 
 
@@ -204,22 +230,18 @@ string conversion_a_binario(string contenido){
 
 
 /*****************************************! 2. Escritura de archivos */
-void Escritura(string binariocod,int n){
+void Escritura(string binariocod){
 
-    //char data[100];
 
-    // abrir un archivo en modo escritura
+
     ofstream outfile;
 
-    if(n==1){
-        // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-        outfile.open("../Aplicacion/BD/Binario_codificado.txt");
-    }
 
-    if(n==2){
-        // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-        outfile.open("../Aplicacion/BD/Binario_decodificado.txt");
-    }
+    // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
+    outfile.open("../Aplicacion/BD/Users.txt");
+
+
+
 
 
     // Se comprueba si el archivo fue abierto exitosamente
@@ -229,22 +251,10 @@ void Escritura(string binariocod,int n){
      exit(1);
     }
 
-//    cout << "\n\nEscribiendo en el archivo" << endl;
-//    cout << "Ingresa tu nombre: ";
-//    cin.getline(data, 100);
-
-    // Escribir el dato ingresado en el archivo
     outfile << binariocod << endl;
 
-//    cout << "Ingresa tu edad: ";
-//    cin >> data;
-//    cin.ignore();
-
-//    // Se escribe la edad en el archivo
-//    outfile << data << endl;
-
     // Se cierra el archivo
-    cout << "\n\nArchivo Escrito<--\n\n" << endl;
+    //cout << "\n\nArchivo Escrito<--\n\n" << endl;
     outfile.close();
 }
 
@@ -260,39 +270,9 @@ string lectura(int n){
     // Abre el archivo en modo lectura
     ifstream infile;
 
-    //****************************************************************************************
-    //****************************************************************************************
-
-    /*string nombre;
-    string frase;
-
-    cout << "Dime el nombre del fichero: ";
-    getline(cin,nombre);
-
-    infile.open ( nombre.c_str() , ios::in);
-    if (infile.is_open()) {
-
-        while (! infile.eof() ) {
-            getline (infile,frase);
-            data+=frase; // almacenar en un string
-        }
-
-        infile.close();
-    }
-
-    else {cout << "Fichero inexistente o faltan permisos para abrirlo" << endl;
-          exit(1); //terminar programa
-    }*/
-
-    //****************************************************************************************
-    //****************************************************************************************
-
-
-
-    // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-    //n=1 codificar
+    //admin
     if(n==1){
-        infile.open("../Aplicacion/BD/afile.txt");
+        infile.open("../Aplicacion/BD/sudo.txt");
     }
     //n=1 decodificar
     if(n==2){
@@ -308,22 +288,10 @@ string lectura(int n){
      exit(1);
     }
 
-    //cout << "\n\nLeyendo el archivo\n\n" << endl;
+
     infile >> data;
-    //
-    // Se escribe el dato en la pantalla
-//    cout << data << endl;
-//    cout << "longitud: " << data.length() << endl;
 
-//    cout << "Impresion caracter a caracter" << endl;
-//    for (unsigned int i = 0; i < data.length(); i++) {
-//       cout << data.at(i) << endl;
-//    }
 
-//    // Se cierra el archivo abierto
-//    infile.close();
-    //
-
-    cout << "\n\nArchivo leido-->\n\n" << endl;
+    //cout << "\n\nArchivo leido-->\n\n" << endl;
     return data;
 }
