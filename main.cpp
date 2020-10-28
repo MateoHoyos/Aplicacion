@@ -40,7 +40,6 @@ usuarios registrados:
 */
 
 
-
 //prototipos de función
 string lectura(int);
 void Escritura(string);
@@ -52,22 +51,56 @@ bool validacion_cedula(string);
 
 int main()
 {
-    int semilla=4;
-    int cod=1; // 1 admin
-
+    //variables
+    int semilla=4,cod;
+    string binario_encriptado;
+    string binario;
+    string contenido_des;
     string admin;
-    cout<<"Ingrese clave: ";
-    cin>>admin;
 
-    string binario_encriptado=lectura(cod);
-    string binario = metodo2_desencriptar(binario_encriptado,semilla);
-    string contenido_des = binario_a_caracteres(binario);
+    cout<<"============================"<<endl;
+    cout<<"Ingrese 1 para administrador"<<endl;
+    cout<<"Ingrese 2 para usuario"<<endl;
+    cout<<"Ingrese 0 para salir"<<endl;
+    cout<<"============================"<<endl;
+    cout<<"Numero: ";
+    cin>>cod;
+    system("CLS");
 
-    //validacion de clave
-    if(admin!=contenido_des){
-        cout<<"Clave incorrecta"<<endl;
-        return 0;
+    switch(cod){
+        case 0:
+            cout<<"Vuelva pronto"<<endl;
+        break;
+
+        case 1:
+            cout<<"Ingrese clave de administrador: ";
+            cin>>admin;
+
+            binario_encriptado=lectura(cod);
+            binario = metodo2_desencriptar(binario_encriptado,semilla);
+            contenido_des = binario_a_caracteres(binario);
+
+            //validacion de clave
+            if(admin!=contenido_des){
+                cout<<"!!Clave incorrecta!!"<<endl;
+                return 0;
+            }
+            system("CLS");
+            cout<<"******************"<<endl;
+            cout<<"Modo Administrador"<<endl;
+            cout<<"******************"<<endl;
+            return 0;
+        break;
+
+        case 2:
+        break;
+
+        default:
+        cout << "Usted ha ingresado una opcion incorrecta";
+
     }
+
+
 
     string Users;
     string Users_incriptado;
