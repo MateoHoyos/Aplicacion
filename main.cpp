@@ -26,6 +26,10 @@ Ruta relativa para el usuarios: "../Aplicacion/BD/Users.txt"
 
 
 sudo.txt tiene la incriptada la contraseña "Mateo123"
+El formato de registro será : cédula de 10 digitos, clave de 4 digitos, saldo (COP).
+usuarios registrados:
+0123456789,1111,10000
+9876543210,7852,500000
 
 =====================================================================
 
@@ -44,7 +48,7 @@ string conversion_a_binario(string);
 string binario_a_caracteres(string);
 string metodo2_encriptar(string ,int);
 string metodo2_desencriptar(string ,int);
-
+bool validacion_cedula(string);
 
 int main()
 {
@@ -65,33 +69,91 @@ int main()
         return 0;
     }
 
+    string Users;
+    string Users_incriptado;
+    string cedula;
+    string clave;
+    string saldo;
+    string binariocod;
+
+    cout<<"Ingrese usuario: ";
+    cin>>Users;
+
+    int length_b = Users.length();
+
+    for(int i=0;Users[i]!='\n' and i<length_b;i++){
+        if(i<10){
+           cedula+=Users[i];
+        }
+        else if(i>=11 and i<=14){
+            clave+=Users[i];
+        }
+        else if(i>15 and i<length_b){
+            saldo+=Users[i];
+        }
+    }
+
+    bool validar = validacion_cedula(cedula);
+
+    if(validar==true){
+        cout<<"Usuario ya regristrado"<<endl;
+        return 0;
+    }
+
+    binario = conversion_a_binario(cedula);
+    binariocod = metodo2_encriptar(binario,semilla);
+    //cout<<binariocod.length()<<endl;
+    Users_incriptado=binariocod+',';
+
+    binario = conversion_a_binario(clave);
+    binariocod = metodo2_encriptar(binario,semilla);
+    Users_incriptado+=binariocod+',';
+
+    binario = conversion_a_binario(saldo);
+    binariocod = metodo2_encriptar(binario,semilla);
+    Users_incriptado+=binariocod;
+
+    Escritura(Users_incriptado);
+
     return 0;
 
-    /*string contenido;
-    string contenidocod;
-    string binario;
-    string binariocod;
-    int semilla=4,cod=1; //cod encriptar
-    contenido=lectura(cod);
 
-    binario = conversion_a_binario(contenido);
-    //cout <<"\n\n"<< binario << "\n\n";
-    binariocod = metodo2_encriptar(binario,semilla);
-    //cout <<"\n\n"<< binariocod << "\n\n";
-    Escritura(binariocod,cod);
-
-    cod=2; //descriptar
-    contenido=lectura(cod);
-
-    binario = metodo2_desencriptar(contenido,semilla);
-    //cout <<"\n\n"<< binario << "\n\n";
-
-    contenidocod = binario_a_caracteres(binario);
-    //cout <<"\n\n"<< contenidocod << "\n\n";
-    //return 0;
-    Escritura(contenidocod,cod);*/
 }
 
+bool validacion_cedula(string cedula){
+    //bool bandera=false;
+    string BD=lectura(2);
+    //cout<<BD<<endl;
+    //return 0;
+    string cedula1;
+    string binario_encriptado;
+    string binario;
+
+    int length_b = BD.length();
+
+    for(int i=0;i<length_b;i++){
+
+
+       for(int j=0;BD[i]!='\n';j++,i++){
+
+           if(j==0){
+              binario_encriptado=BD[i];
+           }
+           else if(BD[i]!=',' and j<80)
+           {
+             binario_encriptado+=BD[i];
+           }
+        }
+
+        binario = metodo2_desencriptar(binario_encriptado,4);
+        cedula1 = binario_a_caracteres(binario);
+
+        if(cedula==cedula1){
+            return true;
+        }
+    }
+    return false;
+}
 
 
 //****************************************************************************
@@ -233,15 +295,11 @@ string conversion_a_binario(string contenido){
 void Escritura(string binariocod){
 
 
-
     ofstream outfile;
 
 
     // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-    outfile.open("../Aplicacion/BD/Users.txt");
-
-
-
+    outfile.open("../Aplicacion/BD/Users.txt",std::ofstream::app);
 
 
     // Se comprueba si el archivo fue abierto exitosamente
@@ -267,6 +325,7 @@ void Escritura(string binariocod){
 string lectura(int n){
 
     string data;
+    string frase;
     // Abre el archivo en modo lectura
     ifstream infile;
 
@@ -276,7 +335,7 @@ string lectura(int n){
     }
     //n=1 decodificar
     if(n==2){
-        infile.open("../Aplicacion/BD/Binario_codificado.txt");
+        infile.open("../Aplicacion/BD/Users.txt");
     }
 
 
@@ -289,9 +348,17 @@ string lectura(int n){
     }
 
 
-    infile >> data;
+    if(n==1){  //admin
+        infile >> data;
+    }
+    else{ //users
+        while (! infile.eof() ) {
+            getline (infile,frase);
+            data+=frase+'\n'; // almacenar en un string
+        }
+    }
 
-
+    infile.close();
     //cout << "\n\nArchivo leido-->\n\n" << endl;
     return data;
 }
