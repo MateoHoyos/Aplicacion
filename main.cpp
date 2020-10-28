@@ -20,6 +20,14 @@ Especificaciones del programa
 *********************
 Metodo2 desencriptar y encriptar con semilla fija de 4.
 
+Contraseña del admin:"Mateo123"
+Ruta relativa para el admin:    "../Aplicacion/BD/sudo.txt"
+Ruta relativa para el usuarios: "../Aplicacion/BD/Users.txt"
+sudo.txt tiene la incriptada la contraseña "Mateo123"
+
+El formato de registro usuarios será: cédula 10 digitos, clave 4 digitos, saldo (COP).
+
+
 =====================================================================
 
 
@@ -31,40 +39,129 @@ Metodo2 desencriptar y encriptar con semilla fija de 4.
 
 
 //prototipos de función
+void Escritura(string);
 string lectura(int);
-void Escritura(string,int);
 string conversion_a_binario(string);
 string binario_a_caracteres(string);
 string metodo2_encriptar(string ,int);
 string metodo2_desencriptar(string ,int);
+bool validacion_cedula(string);
 
 
 int main()
 {
-    string contenido;
-    string contenidocod;
-    string binario;
+    int semilla=4;
+    int cod=1; // 1 admin
+
+    string admin;
+    cout<<"Ingrese clave: ";
+    cin>>admin;
+
+    string binario_encriptado=lectura(cod);
+    string binario = metodo2_desencriptar(binario_encriptado,semilla);
+    string contenido_des = binario_a_caracteres(binario);
+
+    //validacion de clave
+    if(admin!=contenido_des){
+        cout<<"Clave incorrecta"<<endl;        
+    }
+
+
+    string Users;
+    string Users_incriptado;
+    string cedula;
+    string clave;
+    string saldo;
     string binariocod;
-    int semilla=4,cod=1; //cod encriptar
-    contenido=lectura(cod);
 
-    binario = conversion_a_binario(contenido);
-    //cout <<"\n\n"<< binario << "\n\n";
+
+    cout<<"Ingrese usuario: ";
+    cin>>Users;
+
+    int length_b = Users.length();
+
+    for(int i=0;Users[i]!='\n' and i<length_b;i++){
+        if(i<10){
+           cedula+=Users[i];
+        }
+        else if(i>=11 and i<=14){
+            clave+=Users[i];
+        }
+        else if(i>15 and i<length_b){
+            saldo+=Users[i];
+        }
+    }
+
+    bool validar = validacion_cedula(cedula);
+
+    if(validar==true){
+        cout<<"Usuario ya regristrado"<<endl;
+        return 0;
+    }
+
+    /*cout<<cedula<<endl;
+    cout<<clave<<endl;
+    cout<<saldo<<endl;*/
+
+    binario = conversion_a_binario(cedula);
     binariocod = metodo2_encriptar(binario,semilla);
-    //cout <<"\n\n"<< binariocod << "\n\n";
-    Escritura(binariocod,cod);
+    //cout<<binariocod.length()<<endl;
+    Users_incriptado=binariocod+',';
 
-    cod=2; //descriptar
-    contenido=lectura(cod);
+    binario = conversion_a_binario(clave);
+    binariocod = metodo2_encriptar(binario,semilla);
+    Users_incriptado+=binariocod+',';
 
-    binario = metodo2_desencriptar(contenido,semilla);
-    //cout <<"\n\n"<< binario << "\n\n";
+    binario = conversion_a_binario(saldo);
+    binariocod = metodo2_encriptar(binario,semilla);
+    Users_incriptado+=binariocod;
 
-    contenidocod = binario_a_caracteres(binario);
-    //cout <<"\n\n"<< contenidocod << "\n\n";
-    //return 0;
-    Escritura(contenidocod,cod);
+    Escritura(Users_incriptado);
+
+    return 0;
+
 }
+
+bool validacion_cedula(string cedula){
+    //bool bandera=false;
+    string BD=lectura(2);
+    //cout<<BD<<endl;
+    //return 0;
+    string cedula1;
+    string binario_encriptado;
+    string binario;
+
+    int length_b = BD.length();
+
+    for(int i=0;i<length_b;i++){
+
+
+       for(int j=0;BD[i]!='\n';j++,i++){
+
+           if(j==0){
+              binario_encriptado=BD[i];
+           }
+           else if(BD[i]!=',' and j<80)
+           {
+             binario_encriptado+=BD[i];
+           }
+        }
+
+        binario = metodo2_desencriptar(binario_encriptado,4);
+        cedula1 = binario_a_caracteres(binario);
+
+        if(cedula==cedula1){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+
+
+
 
 
 
@@ -204,22 +301,18 @@ string conversion_a_binario(string contenido){
 
 
 /*****************************************! 2. Escritura de archivos */
-void Escritura(string binariocod,int n){
+void Escritura(string binariocod){
 
-    //char data[100];
 
-    // abrir un archivo en modo escritura
+
     ofstream outfile;
 
-    if(n==1){
-        // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-        outfile.open("../Aplicacion/BD/Binario_codificado.txt");
-    }
 
-    if(n==2){
-        // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-        outfile.open("../Aplicacion/BD/Binario_decodificado.txt");
-    }
+    // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
+    outfile.open("../Aplicacion/BD/Users.txt",std::ofstream::app);
+
+
+
 
 
     // Se comprueba si el archivo fue abierto exitosamente
@@ -229,22 +322,10 @@ void Escritura(string binariocod,int n){
      exit(1);
     }
 
-//    cout << "\n\nEscribiendo en el archivo" << endl;
-//    cout << "Ingresa tu nombre: ";
-//    cin.getline(data, 100);
-
-    // Escribir el dato ingresado en el archivo
     outfile << binariocod << endl;
 
-//    cout << "Ingresa tu edad: ";
-//    cin >> data;
-//    cin.ignore();
-
-//    // Se escribe la edad en el archivo
-//    outfile << data << endl;
-
     // Se cierra el archivo
-    cout << "\n\nArchivo Escrito<--\n\n" << endl;
+    //cout << "\n\nArchivo Escrito<--\n\n" << endl;
     outfile.close();
 }
 
@@ -257,46 +338,17 @@ void Escritura(string binariocod,int n){
 string lectura(int n){
 
     string data;
+    string frase;
     // Abre el archivo en modo lectura
     ifstream infile;
 
-    //****************************************************************************************
-    //****************************************************************************************
-
-    /*string nombre;
-    string frase;
-
-    cout << "Dime el nombre del fichero: ";
-    getline(cin,nombre);
-
-    infile.open ( nombre.c_str() , ios::in);
-    if (infile.is_open()) {
-
-        while (! infile.eof() ) {
-            getline (infile,frase);
-            data+=frase; // almacenar en un string
-        }
-
-        infile.close();
-    }
-
-    else {cout << "Fichero inexistente o faltan permisos para abrirlo" << endl;
-          exit(1); //terminar programa
-    }*/
-
-    //****************************************************************************************
-    //****************************************************************************************
-
-
-
-    // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-    //n=1 codificar
+    //admin
     if(n==1){
-        infile.open("../Aplicacion/BD/afile.txt");
+        infile.open("../Aplicacion/BD/sudo.txt");
     }
-    //n=1 decodificar
+    //n=1 users
     if(n==2){
-        infile.open("../Aplicacion/BD/Binario_codificado.txt");
+        infile.open("../Aplicacion/BD/Users.txt");
     }
 
 
@@ -308,22 +360,17 @@ string lectura(int n){
      exit(1);
     }
 
-    //cout << "\n\nLeyendo el archivo\n\n" << endl;
-    infile >> data;
-    //
-    // Se escribe el dato en la pantalla
-//    cout << data << endl;
-//    cout << "longitud: " << data.length() << endl;
+    if(n==1){  //admin
+        infile >> data;
+    }
+    else{ //users
+        while (! infile.eof() ) {
+            getline (infile,frase);
+            data+=frase+'\n'; // almacenar en un string
+        }
+    }
 
-//    cout << "Impresion caracter a caracter" << endl;
-//    for (unsigned int i = 0; i < data.length(); i++) {
-//       cout << data.at(i) << endl;
-//    }
 
-//    // Se cierra el archivo abierto
-//    infile.close();
-    //
-
-    cout << "\n\nArchivo leido-->\n\n" << endl;
+    //cout << "\n\nArchivo leido-->\n\n" << endl;
     return data;
 }
