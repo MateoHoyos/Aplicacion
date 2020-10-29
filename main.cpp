@@ -26,21 +26,19 @@ Ruta relativa para el usuarios: "../Aplicacion/BD/Users.txt"
 
 
 sudo.txt tiene la incriptada la contraseña "Mateo123"
-El formato de registro será : cédula de 10 digitos, clave de 4 digitos, saldo (COP).
+
+El formato de registro será :
+cédula de 10 digitos, clave de 4 digitos, Los saldos maximos de 10 digitos.
+
 usuarios registrados:
 0123456789,1111,10000
 9876543210,7852,500000
 
 Usario: Ingresa cedula de 10 digitos y clave de 4 digitos
 
-Los saldos maximos de 10 digitos
+
 
 =====================================================================
-
-
-
-
-
 */
 
 //funciones globales
@@ -62,6 +60,7 @@ void registro_de_usuarios(string);
 bool validacion_usuario(string);
 bool validacion_clave(string);
 void consulta();
+void retirar();
 
 int main()
 {
@@ -141,8 +140,9 @@ int main()
         case 2:
             system("CLS");
             cout<<"         *****Bienvenido****"<<endl;
-            cout<<".........................................."<<endl;
-            cout<<"Recuerde ingresar sus datos asi"<<endl;
+            cout<<"******************************************"<<endl<<endl;
+            cout<<"           $BANCO ROBARTE$"<<endl<<endl;
+            cout<<"     Recuerde ingresar sus datos asi"<<endl;
             cout<<"<cedula de 10 digitos>,<clave de 4 digitos>"<<endl;
             cout<<"=========================================="<<endl;
             cout<<"=========================================="<<endl;
@@ -166,10 +166,17 @@ int main()
                    break;
                case 1:
                    consulta();
+                   system("CLS");
+                   cout<<"***Gracias por confiar su dinero con nosotros***"<<endl<<endl;
+                   cout<<"              Vuelva pronto"<<endl<<endl;
                    return 0;
                    break;
                case 2:
-
+                   retirar();
+                   system("CLS");
+                   cout<<"***Gracias por confiar su dinero con nosotros***"<<endl<<endl;
+                   cout<<"              Vuelva pronto"<<endl<<endl;
+                   return 0;
                    break;
 
                default:
@@ -193,6 +200,120 @@ int main()
     return 0;
 }
 
+void retirar(){
+
+    string binariocod;
+    string binario_encriptado;
+    string binario;
+    string contenido_des;
+    string Users_incriptado;
+
+    string cedula_incriptado;
+    string clave_incriptado;
+    string saldo_incriptado;
+
+   int saldo_numero=::stoi(saldo_usuario);
+   int valor=0;
+
+   if(saldo_numero<1000){
+       system("CLS");
+       cout<<"Usuario:"<<cedula_usuario<<endl;
+       cout<<"******************************************"<<endl;
+       cout<<"Lo sentimos, no tiene saldo"<<endl;
+       exit(1);
+   }
+
+
+   system("CLS");
+   cout<<"Usuario:"<<cedula_usuario<<endl;
+   cout<<"Recuerde que cada retire tiene un costo de 1,000 pesos"<<endl;
+   cout<<"*******************************************************"<<endl;
+   cout<<"Ingrese su valor a retirar: ";
+   cin>>valor;
+
+   saldo_numero=saldo_numero-valor-1000;
+
+   if(saldo_numero<0){
+       system("CLS");
+       cout<<"Usuario:"<<cedula_usuario<<endl;
+       cout<<"******************************************"<<endl;
+       cout<<"Lo sentimos, no se puede retirar ese valor"<<endl;
+       system("PAUSE");
+       exit(1);
+   }
+
+
+   system("CLS");
+   cout<<"Usuario:"<<cedula_usuario<<endl;
+   cout<<"******************************************"<<endl;
+   cout<<"**********Transaccion realizada***********"<<endl;
+   cout<<"******************************************"<<endl;
+   cout<<"En su cuenta le quedan: "<<saldo_numero<<endl;
+   system("PAUSE");
+
+
+
+   saldo_usuario = to_string(saldo_numero);
+   //-----------------------------
+   binario = conversion_a_binario(cedula_usuario);
+   cedula_incriptado = metodo2_encriptar(binario,semilla);
+   //cout<<binariocod.length()<<endl;
+   Users_incriptado=cedula_incriptado+' ';
+
+   binario = conversion_a_binario(clave_usuario);
+   clave_incriptado = metodo2_encriptar(binario,semilla);
+   Users_incriptado+=clave_incriptado+' ';
+
+   binario = conversion_a_binario(saldo_usuario);
+   saldo_incriptado = metodo2_encriptar(binario,semilla);
+   Users_incriptado+=saldo_incriptado;
+
+
+   //modificacion de archivo********
+
+   ifstream lectura;
+   lectura.open("../Aplicacion/BD/Users.txt",ios::in);
+   ofstream aux("../Aplicacion/BD/temporal.txt",ios::out);
+
+   string cedula1_incriptado;
+   string clave1_incriptado;
+   string saldo1_incriptado;
+
+   if(lectura.is_open()){
+
+       lectura>>cedula1_incriptado;
+       while(!lectura.eof()){
+           lectura>>clave1_incriptado;
+           lectura>>saldo1_incriptado;
+           if(cedula1_incriptado==cedula_incriptado){
+
+           }
+           else{
+             aux<<cedula1_incriptado<<" "<<clave1_incriptado<<" "<<saldo1_incriptado<<endl;
+           }
+           lectura>>cedula1_incriptado;
+       }
+       aux<<Users_incriptado<<endl;
+       lectura.close();
+       aux.close();
+   }
+
+   else{
+       cout<<"error"<<endl;
+   }
+
+   remove("../Aplicacion/BD/Users.txt");
+   rename("../Aplicacion/BD/temporal.txt","../Aplicacion/BD/Users.txt");
+}
+
+
+
+
+
+
+
+
+
 
 //****************************************************************************
 void consulta(){
@@ -214,6 +335,7 @@ void consulta(){
        cout<<"Usuario:"<<cedula_usuario<<endl;
        cout<<"******************************************"<<endl;
        cout<<"Lo sentimos, no tiene saldo"<<endl;
+       system("PAUSE");
        exit(1);
    }
 
@@ -222,6 +344,7 @@ void consulta(){
    cout<<"Usuario:"<<cedula_usuario<<endl;
    cout<<"******************************************"<<endl;
    cout<<"Su saldo es: "<<saldo_numero<<endl;
+   system("PAUSE");
 
    saldo_usuario = to_string(saldo_numero);
 
@@ -328,11 +451,6 @@ bool validacion_usuario(string Usuario){
     //clave_usuario=clave;
     return true;
 }
-
-
-
-
-
 
 
 
