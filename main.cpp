@@ -192,16 +192,88 @@ int main()
     }
     return 0;
 }
+
+
 //****************************************************************************
 void consulta(){
 
+    string binariocod;
+    string binario_encriptado;
+    string binario;
+    string contenido_des;
+    string Users_incriptado;
+
+    string cedula_incriptado;
+    string clave_incriptado;
+    string saldo_incriptado;
 
    int saldo_numero=::stoi(saldo_usuario);
+
+   if(saldo_numero<1000){
+       system("CLS");
+       cout<<"Usuario:"<<cedula_usuario<<endl;
+       cout<<"******************************************"<<endl;
+       cout<<"Lo sentimos, no tiene saldo"<<endl;
+       exit(1);
+   }
+
    saldo_numero=saldo_numero-1000;
    system("CLS");
    cout<<"Usuario:"<<cedula_usuario<<endl;
    cout<<"******************************************"<<endl;
    cout<<"Su saldo es: "<<saldo_numero<<endl;
+
+   saldo_usuario = to_string(saldo_numero);
+
+   binario = conversion_a_binario(cedula_usuario);
+   cedula_incriptado = metodo2_encriptar(binario,semilla);
+   //cout<<binariocod.length()<<endl;
+   Users_incriptado=cedula_incriptado+' ';
+
+   binario = conversion_a_binario(clave_usuario);
+   clave_incriptado = metodo2_encriptar(binario,semilla);
+   Users_incriptado+=clave_incriptado+' ';
+
+   binario = conversion_a_binario(saldo_usuario);
+   saldo_incriptado = metodo2_encriptar(binario,semilla);
+   Users_incriptado+=saldo_incriptado;
+
+
+   //modificacion de archivo********
+
+   ifstream lectura;
+   lectura.open("../Aplicacion/BD/Users.txt",ios::in);
+   ofstream aux("../Aplicacion/BD/temporal.txt",ios::out);
+
+   string cedula1_incriptado;
+   string clave1_incriptado;
+   string saldo1_incriptado;
+
+   if(lectura.is_open()){
+
+       lectura>>cedula1_incriptado;
+       while(!lectura.eof()){
+           lectura>>clave1_incriptado;
+           lectura>>saldo1_incriptado;
+           if(cedula1_incriptado==cedula_incriptado){
+
+           }
+           else{
+             aux<<cedula1_incriptado<<" "<<clave1_incriptado<<" "<<saldo1_incriptado<<endl;
+           }
+           lectura>>cedula1_incriptado;
+       }
+       aux<<Users_incriptado<<endl;
+       lectura.close();
+       aux.close();
+   }
+
+   else{
+       cout<<"error"<<endl;
+   }
+
+   remove("../Aplicacion/BD/Users.txt");
+   rename("../Aplicacion/BD/temporal.txt","../Aplicacion/BD/Users.txt");
 }
 
 
@@ -302,16 +374,15 @@ void registro_de_usuarios(string Users){
         binario = conversion_a_binario(cedula);
         binariocod = metodo2_encriptar(binario,semilla);
         //cout<<binariocod.length()<<endl;
-        Users_incriptado=binariocod+',';
+        Users_incriptado=binariocod+' ';
 
         binario = conversion_a_binario(clave);
         binariocod = metodo2_encriptar(binario,semilla);
-        Users_incriptado+=binariocod+',';
+        Users_incriptado+=binariocod+' ';
 
         binario = conversion_a_binario(saldo);
         binariocod = metodo2_encriptar(binario,semilla);
         Users_incriptado+=binariocod;
-
         Escritura(Users_incriptado);
     }
 }
@@ -553,10 +624,7 @@ string conversion_a_binario(string contenido){
 /*****************************************! 2. Escritura de archivos */
 void Escritura(string binariocod){
 
-
     ofstream outfile;
-
-
     // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
     outfile.open("../Aplicacion/BD/Users.txt",std::ofstream::app);
 
@@ -574,6 +642,7 @@ void Escritura(string binariocod){
     cout << "\n\nUsario Registrado<--\n\n" << endl;
     outfile.close();
     system("PAUSE");
+
 }
 
 
