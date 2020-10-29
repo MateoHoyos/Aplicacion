@@ -31,6 +31,8 @@ usuarios registrados:
 0123456789,1111,10000
 9876543210,7852,500000
 
+Usario: Ingresa cedula de 10 digitos y clave de 4 digitos
+
 =====================================================================
 
 
@@ -38,6 +40,12 @@ usuarios registrados:
 
 
 */
+
+//funciones globales
+int semilla=4;
+string cedula_usuario;
+string clave_usuario;
+string saldo_usuario;
 
 
 //prototipos de función
@@ -48,15 +56,21 @@ string binario_a_caracteres(string);
 string metodo2_encriptar(string ,int);
 string metodo2_desencriptar(string ,int);
 bool validacion_cedula(string);
+void registro_de_usuarios(string);
+bool validacion_usuario(string);
+bool validacion_clave(string);
 
 int main()
 {
     //variables
-    int semilla=4,cod;
+    int cod,n;
     string binario_encriptado;
     string binario;
     string contenido_des;
     string admin;
+    string Users;
+    string Usuario;
+    bool validacion;
 
     cout<<"============================"<<endl;
     cout<<"Ingrese 1 para administrador"<<endl;
@@ -85,32 +99,145 @@ int main()
                 cout<<"!!Clave incorrecta!!"<<endl;
                 return 0;
             }
-            system("CLS");
-            cout<<"******************"<<endl;
-            cout<<"Modo Administrador"<<endl;
-            cout<<"******************"<<endl;
+
+            do{
+                system("CLS");
+                cout<<"******************"<<endl;
+                cout<<"Modo Administrador"<<endl;
+                cout<<"******************"<<endl<<endl;
+                cout<<"================================="<<endl;
+                cout<<"Ingrese 1 para registrar usuarios"<<endl;
+                cout<<"Ingrese 0 para salir"<<endl;
+                cout<<"================================="<<endl;
+                cout<<"Numero: ";
+                cin>>n;
+                switch(n){
+                 case 0:
+                    system("CLS");
+                    cout<<"Salida de administrador"<<endl;
+                    cout<<"Vuelva pronto"<<endl<<endl;
+                    break;
+
+                case 1:
+                    system("CLS");
+                    cout<<"Formato de registro de usuarios"<<endl;
+                    cout<<"<cedula de 10 digitos>,<clave de 4 digitos>,<saldo (COP)>"<<endl;
+                    cout<<"Ingrese usuario: ";
+                    cin>>Users;
+                    registro_de_usuarios(Users);
+                    break;
+
+                default:
+                    cout << "Usted ha ingresado una opcion incorrecta"<<endl;
+                }
+            }while(n!=0);
+
             return 0;
         break;
 
         case 2:
+            system("CLS");
+            cout<<"         *****Bienvenido****"<<endl;
+            cout<<"=========================================="<<endl;
+            cout<<"Recuerde ingresar sus datos asi"<<endl;
+            cout<<"<cedula de 10 digitos>,<clave de 4 digitos>"<<endl;
+            cout<<"=========================================="<<endl;
+            cout<<"Ingrese sus datos: ";
+            cin>>Usuario;
+            validacion=validacion_usuario(Usuario);
+            if(validacion==true){
+               cout<<"=========================================="<<endl;
+               cout<<"Usario:"<<cedula_usuario<<endl;
+               cout<<"=========================================="<<endl;
+               cout<<"Saldo:"<<saldo_usuario<<endl;
+               cout<<"clave:"<<clave_usuario<<endl;
+               return 0;
+            }
+            if(validacion==false){
+               system("CLS");
+               cout<<"Vuelva pronto"<<endl<<endl;
+            }
+            return 0;
         break;
 
         default:
-        cout << "Usted ha ingresado una opcion incorrecta";
+        cout << "Usted ha ingresado una opcion incorrecta"<<endl;
+        cout<<"Vuelva pronto"<<endl<<endl;
+
+    }
+    return 0;
+}
+
+
+//****************************************************************************
+bool validacion_usuario(string Usuario){
+    bool documento;
+    bool clave1;
+
+    string binario_encriptado;
+    string binario;
+
+    string cedula;
+    string clave;
+
+    if(Usuario.length()!=15){
+        cout<<"\n\n*****Documento o clave no son validos*****\n\n"<<endl;
+        system("PAUSE");
+        return 0;
+    }
+
+    int length_b = Usuario.length();
+
+    for(int i=0;Usuario[i]!='\n' and i<length_b;i++){
+        if(i<10){
+           cedula+=Usuario[i];
+        }
+        else if(i>10){
+            clave+=Usuario[i];
+        }
 
     }
 
+    documento = validacion_cedula(cedula);
+    clave1 = validacion_clave(clave);
+
+    if(documento==false){
+        cout<<"\n\n*****Usuario no registrado*****\n\n"<<endl;
+        system("PAUSE");
+        return 0;
+
+    }
+
+    if(clave1==false){
+        cout<<"\n\n*****Clave invalida*****\n\n"<<endl;
+        system("PAUSE");
+        return 0;
+
+    }
+    cedula_usuario=cedula;
+    //clave_usuario=clave;
+    return true;
+}
 
 
-    string Users;
+
+
+
+
+
+
+//****************************************************************************
+void registro_de_usuarios(string Users){
+
     string Users_incriptado;
     string cedula;
     string clave;
     string saldo;
     string binariocod;
+    string binario_encriptado;
+    string binario;
+    string contenido_des;
 
-    cout<<"Ingrese usuario: ";
-    cin>>Users;
 
     int length_b = Users.length();
 
@@ -129,30 +256,91 @@ int main()
     bool validar = validacion_cedula(cedula);
 
     if(validar==true){
-        cout<<"Usuario ya regristrado"<<endl;
-        return 0;
+        cout<<"\n\n*****Usuario ya regristrado*****\n\n"<<endl;
+        system("PAUSE");
+
     }
+    else{
+        binario = conversion_a_binario(cedula);
+        binariocod = metodo2_encriptar(binario,semilla);
+        //cout<<binariocod.length()<<endl;
+        Users_incriptado=binariocod+',';
 
-    binario = conversion_a_binario(cedula);
-    binariocod = metodo2_encriptar(binario,semilla);
-    //cout<<binariocod.length()<<endl;
-    Users_incriptado=binariocod+',';
+        binario = conversion_a_binario(clave);
+        binariocod = metodo2_encriptar(binario,semilla);
+        Users_incriptado+=binariocod+',';
 
-    binario = conversion_a_binario(clave);
-    binariocod = metodo2_encriptar(binario,semilla);
-    Users_incriptado+=binariocod+',';
+        binario = conversion_a_binario(saldo);
+        binariocod = metodo2_encriptar(binario,semilla);
+        Users_incriptado+=binariocod;
 
-    binario = conversion_a_binario(saldo);
-    binariocod = metodo2_encriptar(binario,semilla);
-    Users_incriptado+=binariocod;
-
-    Escritura(Users_incriptado);
-
-    return 0;
-
-
+        Escritura(Users_incriptado);
+    }
 }
 
+//****************************************************************************
+bool validacion_clave(string clave){
+    //bool bandera=false;
+    string BD=lectura(2);
+    //cout<<BD<<endl;
+    //return 0;
+    string clave1;
+    string binario_encriptado;
+    string binario;
+
+    string saldo;
+    string saldo_encriptado;
+    string saldo_binario;
+
+    int length_b = BD.length();
+
+    for(int i=0;i<length_b;i++){
+
+
+       for(int j=0;BD[i]!='\n';j++,i++){
+
+           if(j==81){
+              binario_encriptado=BD[i];
+           }
+           if(j>81 and j<113)
+           {
+             binario_encriptado+=BD[i];
+           }
+           else if(BD[i]!='\n' and j==114){
+              saldo_encriptado=BD[i];
+           }
+           else if(BD[i]!='\n' and j>114){
+
+              saldo_encriptado+=BD[i];
+           }
+        }
+
+       binario = metodo2_desencriptar(binario_encriptado,4);
+       clave1 = binario_a_caracteres(binario);
+
+       //cout<<clave1<<"."<<endl<<endl;
+       //system("PAUSE");
+
+       if(clave==clave1){
+           saldo_binario = metodo2_desencriptar(saldo_encriptado,4);
+           saldo = binario_a_caracteres(saldo_binario);
+           //cout<<saldo<<"."<<endl<<endl;
+           //system("PAUSE");
+           clave_usuario=saldo;
+           saldo_usuario=clave1;
+           return true;
+       }
+
+    }
+    return false;
+}
+
+
+
+
+
+
+//****************************************************************************
 bool validacion_cedula(string cedula){
     //bool bandera=false;
     string BD=lectura(2);
@@ -345,8 +533,9 @@ void Escritura(string binariocod){
     outfile << binariocod << endl;
 
     // Se cierra el archivo
-    //cout << "\n\nArchivo Escrito<--\n\n" << endl;
+    cout << "\n\nUsario Registrado<--\n\n" << endl;
     outfile.close();
+    system("PAUSE");
 }
 
 
