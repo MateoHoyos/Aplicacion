@@ -33,6 +33,8 @@ usuarios registrados:
 
 Usario: Ingresa cedula de 10 digitos y clave de 4 digitos
 
+Los saldos maximos de 10 digitos
+
 =====================================================================
 
 
@@ -53,12 +55,13 @@ string lectura(int);
 void Escritura(string);
 string conversion_a_binario(string);
 string binario_a_caracteres(string);
-string metodo2_encriptar(string ,int);
-string metodo2_desencriptar(string ,int);
+string metodo2_encriptar(string,int);
+string metodo2_desencriptar(string,int);
 bool validacion_cedula(string);
 void registro_de_usuarios(string);
 bool validacion_usuario(string);
 bool validacion_clave(string);
+void consulta();
 
 int main()
 {
@@ -138,20 +141,42 @@ int main()
         case 2:
             system("CLS");
             cout<<"         *****Bienvenido****"<<endl;
-            cout<<"=========================================="<<endl;
+            cout<<".........................................."<<endl;
             cout<<"Recuerde ingresar sus datos asi"<<endl;
             cout<<"<cedula de 10 digitos>,<clave de 4 digitos>"<<endl;
+            cout<<"=========================================="<<endl;
             cout<<"=========================================="<<endl;
             cout<<"Ingrese sus datos: ";
             cin>>Usuario;
             validacion=validacion_usuario(Usuario);
             if(validacion==true){
+               cout<<"\n\n******************************************"<<endl;
+               cout<<"Usuario:"<<cedula_usuario<<endl;
+               cout<<"******************************************"<<endl;
+               cout<<"Ingrese 1 para consultar saldo"<<endl;
+               cout<<"Ingrese 2 retirar"<<endl;
+               cout<<"Ingrese 0 para salir"<<endl;
                cout<<"=========================================="<<endl;
-               cout<<"Usario:"<<cedula_usuario<<endl;
-               cout<<"=========================================="<<endl;
-               cout<<"Saldo:"<<saldo_usuario<<endl;
-               cout<<"clave:"<<clave_usuario<<endl;
+               cout<<"Numero: ";
+               cin>>n;
+               switch(n){
+               case 0:
+                   system("CLS");
+                   cout<<"Vuelva pronto"<<endl<<endl;
+                   break;
+               case 1:
+                   consulta();
+                   return 0;
+                   break;
+               case 2:
+
+                   break;
+
+               default:
+               cout << "Usted ha ingresado una opcion incorrecta"<<endl;
+               cout<<"Vuelva pronto"<<endl<<endl;
                return 0;
+               }
             }
             if(validacion==false){
                system("CLS");
@@ -167,6 +192,19 @@ int main()
     }
     return 0;
 }
+//****************************************************************************
+void consulta(){
+
+
+   int saldo_numero=::stoi(saldo_usuario);
+   saldo_numero=saldo_numero-1000;
+   system("CLS");
+   cout<<"Usuario:"<<cedula_usuario<<endl;
+   cout<<"******************************************"<<endl;
+   cout<<"Su saldo es: "<<saldo_numero<<endl;
+}
+
+
 
 
 //****************************************************************************
@@ -326,8 +364,8 @@ bool validacion_clave(string clave){
            saldo = binario_a_caracteres(saldo_binario);
            //cout<<saldo<<"."<<endl<<endl;
            //system("PAUSE");
-           clave_usuario=saldo;
-           saldo_usuario=clave1;
+           clave_usuario=clave1;
+           saldo_usuario=saldo;
            return true;
        }
 
