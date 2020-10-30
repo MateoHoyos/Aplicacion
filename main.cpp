@@ -12,6 +12,23 @@ Modelar un sistema de registro de usuarios que tenga las siguientes funcionalida
 Nota: La validación de acceso se debe hacer abriendo el archivo sudo.txt y comparando con la
 clave registrada que debe estar encriptada.
 
+2. Una vez se valide el ingreso como administrador, se podrá realizar el registro de usuarios
+del cajero electrónico. El formato de registro será el siguiente: cédula, clave, saldo (COP).
+
+3. Debe permitir acceso a los usuarios del sistema y permitir realizar las siguientes
+operaciones:
+    a. Consultar saldo.
+    b. Retirar dinero especificando la cantidad deseada.
+
+4. Se debe actualizar la información del cliente cada vez que acceda al sistema teniendo en
+cuenta las siguientes características:
+    i. Cada ingreso al cajero por parte de los clientes para retirar dinero o
+    consultar el saldo tiene un costo de 1000 COP.
+    ii. Cuando se retire dinero del cajero se debe actualizar el saldo en la cuenta
+    del usuario.
+
+Nota: Todas las transacciones que se realicen en el cajero deben tener la información
+encriptada
 
 
 =====================================================================
@@ -25,18 +42,22 @@ Ruta relativa para el admin:    "../Aplicacion/BD/sudo.txt"
 Ruta relativa para el usuarios: "../Aplicacion/BD/Users.txt"
 
 
-sudo.txt tiene la incriptada la contraseña "Mateo123"
+"sudo.txt" tiene incriptada la contraseña "Mateo123"
 
 El formato de registro será :
 cédula de 10 digitos, clave de 4 digitos, Los saldos maximos de 10 digitos.
 
-usuarios registrados:
+EL modo administrador no tiene para validar si se ingresaron digitos
+o las longitudes de cada dato, como validar si se ingresaron 10 digitos de cedula,etc
+
+usuarios registrados e incripatos en "Users.txt":
 0123456789,1111,10000
 9876543210,7852,500000
 
 Usario: Ingresa cedula de 10 digitos y clave de 4 digitos
 
-
+El programa en cada cambio se sale,
+excepto el modo admin que puede registrar los usuarios que quiera
 
 =====================================================================
 */
@@ -74,6 +95,8 @@ int main()
     string Usuario;
     bool validacion;
 
+    cout<<"****************************"<<endl<<endl;
+    cout<<"       $CAJERO ROBARTE$      "<<endl<<endl;
     cout<<"============================"<<endl;
     cout<<"Ingrese 1 para administrador"<<endl;
     cout<<"Ingrese 2 para usuario"<<endl;
@@ -85,7 +108,10 @@ int main()
 
     switch(cod){
         case 0:
-            cout<<"Vuelva pronto"<<endl;
+        system("CLS");
+        cout<<"***Gracias por confiar su dinero con nosotros***"<<endl<<endl;
+        cout<<"               Vuelva pronto"<<endl<<endl;
+        return 0;
         break;
 
         case 1:
@@ -98,15 +124,17 @@ int main()
 
             //validacion de clave
             if(admin!=contenido_des){
-                cout<<"!!Clave incorrecta!!"<<endl;
+                cout<<"  **Clave incorrecta**"<<endl<<endl;
+                cout<<"Salida de administrador"<<endl;
+                cout<<"     Vuelva pronto"<<endl<<endl;
                 return 0;
             }
 
             do{
                 system("CLS");
-                cout<<"******************"<<endl;
-                cout<<"Modo Administrador"<<endl;
-                cout<<"******************"<<endl<<endl;
+                cout<<"       ******************"<<endl;
+                cout<<"       Modo Administrador"<<endl;
+                cout<<"       ******************"<<endl<<endl;
                 cout<<"================================="<<endl;
                 cout<<"Ingrese 1 para registrar usuarios"<<endl;
                 cout<<"Ingrese 0 para salir"<<endl;
@@ -116,13 +144,13 @@ int main()
                 switch(n){
                  case 0:
                     system("CLS");
-                    cout<<"Salida de administrador"<<endl;
-                    cout<<"Vuelva pronto"<<endl<<endl;
+                    cout<<"  Salida de administrador"<<endl;
+                    cout<<"     Vuelva pronto"<<endl<<endl;
                     break;
 
                 case 1:
                     system("CLS");
-                    cout<<"Formato de registro de usuarios"<<endl;
+                    cout<<"             Formato de registro de usuarios"<<endl;
                     cout<<"<cedula de 10 digitos>,<clave de 4 digitos>,<saldo (COP)>"<<endl;
                     cout<<"Ingrese usuario: ";
                     cin>>Users;
@@ -130,7 +158,8 @@ int main()
                     break;
 
                 default:
-                    cout << "Usted ha ingresado una opcion incorrecta"<<endl;
+                    cout <<endl<< "**Usted ha ingresado una opcion incorrecta**"<<endl;
+                    system("PAUSE");
                 }
             }while(n!=0);
 
@@ -139,17 +168,17 @@ int main()
 
         case 2:
             system("CLS");
-            cout<<"         *****Bienvenido****"<<endl;
-            cout<<"******************************************"<<endl<<endl;
-            cout<<"           $BANCO ROBARTE$"<<endl<<endl;
+            cout<<"         *****Bienvenido****"<<endl<<endl;
+            cout<<"           $CAJERO ROBARTE$"<<endl<<endl;
+            cout<<"=========================================="<<endl;
             cout<<"     Recuerde ingresar sus datos asi"<<endl;
             cout<<"<cedula de 10 digitos>,<clave de 4 digitos>"<<endl;
-            cout<<"=========================================="<<endl;
             cout<<"=========================================="<<endl;
             cout<<"Ingrese sus datos: ";
             cin>>Usuario;
             validacion=validacion_usuario(Usuario);
             if(validacion==true){
+               system("CLS");
                cout<<"\n\n******************************************"<<endl;
                cout<<"Usuario:"<<cedula_usuario<<endl;
                cout<<"******************************************"<<endl;
@@ -162,7 +191,8 @@ int main()
                switch(n){
                case 0:
                    system("CLS");
-                   cout<<"Vuelva pronto"<<endl<<endl;
+                   cout<<"***Gracias por confiar su dinero con nosotros***"<<endl<<endl;
+                   cout<<"              Vuelva pronto"<<endl<<endl;
                    break;
                case 1:
                    consulta();
@@ -181,20 +211,22 @@ int main()
 
                default:
                cout << "Usted ha ingresado una opcion incorrecta"<<endl;
-               cout<<"Vuelva pronto"<<endl<<endl;
+               cout<<"***Gracias por confiar su dinero con nosotros***"<<endl<<endl;
+               cout<<"              Vuelva pronto"<<endl<<endl;
                return 0;
                }
             }
             if(validacion==false){
                system("CLS");
-               cout<<"Vuelva pronto"<<endl<<endl;
+               cout<<"***Gracias por confiar su dinero con nosotros***"<<endl<<endl;
+               cout<<"              Vuelva pronto"<<endl<<endl;
             }
             return 0;
         break;
 
         default:
         cout << "Usted ha ingresado una opcion incorrecta"<<endl;
-        cout<<"Vuelva pronto"<<endl<<endl;
+        cout<<"            Vuelva pronto"<<endl<<endl;
 
     }
     return 0;
@@ -248,7 +280,7 @@ void retirar(){
    cout<<"******************************************"<<endl;
    cout<<"**********Transaccion realizada***********"<<endl;
    cout<<"******************************************"<<endl;
-   cout<<"En su cuenta le quedan: "<<saldo_numero<<endl;
+   cout<<"En su cuenta le quedan: "<<saldo_numero<<endl<<endl;
    system("PAUSE");
 
 
@@ -431,6 +463,7 @@ bool validacion_usuario(string Usuario){
 
     }
 
+
     documento = validacion_cedula(cedula);
     clave1 = validacion_clave(clave);
 
@@ -481,12 +514,13 @@ void registro_de_usuarios(string Users){
         }
     }
 
+
+
     bool validar = validacion_cedula(cedula);
 
     if(validar==true){
         cout<<"\n\n*****Usuario ya regristrado*****\n\n"<<endl;
         system("PAUSE");
-
     }
     else{
         binario = conversion_a_binario(cedula);
